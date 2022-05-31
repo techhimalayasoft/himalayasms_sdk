@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: Himalaya SMS
+  description: Himalaya SMS Client SDK
+  version: 1.0.0
+
+servers:
+  - url: https://sms.techhimalaya.com
+    description: Sample
+
+
+paths:
+  /miscapi/{apikey}/getBalance/true:
+    get:
+      summary: Get Available Balance
+      operationId: getBalance
+      parameters:
+            - in: path
+              name: apikey
+              schema:
+                type: string
+              required: true
+              description: Your API KEY
+      responses:
+        '200':    # status code
+          description: JSON encoded string containing route id, route name and credits available for each route associated with the account.
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Balance'
+                    
+        '400':
+          description: Error Not Found
+  
+  /miscapi/{apikey}/getDLR/{smsshootid}:
+    get:
+      summary: This API is for fetching your SMS delivery report.
+      operationId: getDeliveryReport
+      parameters:
+            - in: path
+              name: apikey
+              schema:
+                type: string
+              required: true
+              description: Your API KEY
+            - in: path
+              name: smsshootid
+              schema:
+                type: string
+              required: true
+              description: SMS Shoot ID
+      responses:
+        '200':
+          description: JSON encoded array of DLR status
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeliveryReport' 
+        '400':
+          description: Not Found
+
+  /smsapi/index.php:
+    post:
+      summary: Creates new SMS.
+      description: Send SMS 
+      operationId: sendSMS
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sms'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Not Found
+
+
+components:
+  schemas:
+    DeliveryReport:
+      type: object
+      required:
+        - MSISDN
+        - DLR
+        - DESC
+      properties:
+        MSISDN:
+          type: string
+        DLR:
+          type: string
+        DESC:
+          type: string
+
+    Balance:
+      type: object
+      required:
+        - ROUTE_ID
+        - ROUTE
+        - BALANCE
+      properties:
+        ROUTE_ID:
+          type: string
+        ROUTE:
+          type: string
+        BALANCE:
+          type: string
+
+    Sms:
+      type: object
+      required:
+        - campaign
+        - routeid
+        - type
+        - contacts
+        - senderid
+        - msg
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        key:
+          type: string
+        campaign:
+          type: string
+        routeid:
+          type: int
+        type:
+          type: string
+        contacts:
+          type: string
+        senderid:
+          type: string
+        msg:
+          type: string
+        time:
+          type: DateTime
